@@ -1,21 +1,24 @@
-import React, { useContext } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { Redirect, withRouter } from 'react-router'
 import { AuthContext } from '../context/Auth'
 
 import app from '../firebaseConfig'
 
 const Login = ({ history }) => {
-  const handleLogin = (e) => {
-    e.preventDefault()
-    const { email, password } = e.target.elements
+  const handleLogin = useCallback(
+    async (e) => {
+      e.preventDefault()
+      const { email, password } = e.target.elements
 
-    try {
-      app.auth().signInWithEmailAndPassword(email.value, password.value)
-      history.push('/')
-    } catch (error) {
-      alert(error.message)
-    }
-  }
+      try {
+        await app.auth().signInWithEmailAndPassword(email.value, password.value)
+        history.push('/')
+      } catch (error) {
+        alert(error.message)
+      }
+    },
+    [history]
+  )
 
   const { currentUser } = useContext(AuthContext)
   console.log(currentUser)
